@@ -60,8 +60,8 @@ func (h *handler) ConnectNode(w io.Writer, r *http.Request) Response {
 	height := h.network.UpdateChain()
 
 	resp := map[string]interface{}{
-		"message": "New nodes have been added",
-		"chain_height":height,
+		"message":      "New nodes have been added",
+		"chain_height": height,
 	}
 
 	status := http.StatusCreated

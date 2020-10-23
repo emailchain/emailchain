@@ -11,6 +11,7 @@ type Blockchain struct {
 	Mempool map[string]Email
 	Db      *Database
 }
+
 func NewBlockchain(nodeID string) *Blockchain {
 	database := NewDatabase(nodeID)
 	newBlockchain := &Blockchain{
@@ -24,9 +25,10 @@ func NewBlockchain(nodeID string) *Blockchain {
 	}
 	return newBlockchain
 }
+
 // add block to chain after making sure it is valid
 func (bc *Blockchain) AddBlockToDB(newBlock Block) error {
-	if !bc.ValidChain(newBlock){
+	if !bc.ValidChain(newBlock) {
 		return fmt.Errorf("potential fork on the blockchain")
 	}
 	if bc.ValidPoW(newBlock) {
@@ -136,6 +138,7 @@ func (bc *Blockchain) Sent(pubKey string) []Email {
 	}
 	return listOfEmails
 }
+
 // check if the block has a valid proof of work
 func (bc *Blockchain) ValidPoW(block Block) bool {
 	if !IsProofValid(block, TARGET_BITS) {
@@ -145,6 +148,7 @@ func (bc *Blockchain) ValidPoW(block Block) bool {
 
 	return true
 }
+
 // check if the block breaks the chain
 func (bc *Blockchain) ValidChain(block Block) bool {
 	if ComputeHashForBlock(bc.LastBlock()) != block.PreviousHash {
@@ -153,19 +157,21 @@ func (bc *Blockchain) ValidChain(block Block) bool {
 	}
 	return true
 }
+
 // append new blocks to the chain
-func (bc *Blockchain) UpdateChain(blocks []Block) error{
+func (bc *Blockchain) UpdateChain(blocks []Block) error {
 	var err error = nil
 	for i := len(blocks) - 1; i >= 0; i-- {
 		err = bc.AddBlockToDB(blocks[i])
-		if err != nil{
+		if err != nil {
 			break
 		}
 	}
 	return err
 }
+
 // resolve fork
-func (bc *Blockchain) ResolveFork(blocks []Block){
+func (bc *Blockchain) ResolveFork(blocks []Block) {
 	log.Println("Resolving Fork...")
 	// TODO make it more efficent
 	bc.GenesisBlock()

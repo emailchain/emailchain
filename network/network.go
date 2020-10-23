@@ -5,10 +5,10 @@ import (
 	. "emailchain/blockchain"
 	"encoding/json"
 	"fmt"
+	"github.com/rs/cors"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"github.com/rs/cors"
 )
 
 type Network struct {
@@ -54,7 +54,7 @@ func (n *Network) Broadcast(message Message) {
 		req.Header.Set(HDR_PORT, n.node.Self.Port)
 		_, err = n.client.Do(req)
 		if err != nil {
-			log.Println("Failed to Broadcast Message:"+err.Error())
+			log.Println("Failed to Broadcast Message:" + err.Error())
 			// TODO remove peer form peer list
 		}
 	}
@@ -109,8 +109,8 @@ func (n *Network) UpdateChain() int64 {
 		}
 		blocks := b["blocks"]
 		if blocks != nil {
-			err:= n.blockchain.UpdateChain(blocks)
-			if err != nil{
+			err := n.blockchain.UpdateChain(blocks)
+			if err != nil {
 				n.ResolveFork()
 			}
 		}
@@ -119,7 +119,7 @@ func (n *Network) UpdateChain() int64 {
 }
 
 // get missing blocks
-func (n *Network) GetMissingBlocks(height int64, peer Peer) []Block{
+func (n *Network) GetMissingBlocks(height int64, peer Peer) []Block {
 	uri := fmt.Sprintf(HTTP_URL, peer.Address, peer.Port, CHAIN_MISSINGBLOCKS)
 	var body = make(map[string]int64)
 	body["height"] = height
@@ -141,6 +141,7 @@ func (n *Network) GetMissingBlocks(height int64, peer Peer) []Block{
 	blocks := b["blocks"]
 	return blocks
 }
+
 // find the block with the highest chain
 func (n *Network) HighestChain() Peer {
 	height := int64(0)
@@ -174,7 +175,7 @@ func (n *Network) HighestChain() Peer {
 		//log.Println(result["tip_height"])
 		//log.Println(result["total_pow"])
 		//log.Println("---end---")
-		if height < result["tip_height"] && highestPow < result["total_pow"]{
+		if height < result["tip_height"] && highestPow < result["total_pow"] {
 
 			height = result["tip_height"]
 			highestPow = result["total_pow"]
@@ -183,12 +184,13 @@ func (n *Network) HighestChain() Peer {
 	}
 	return maxHeightPeer
 }
+
 // resolve fork issue
-func (n *Network) ResolveFork(){
+func (n *Network) ResolveFork() {
 	// TODO make it more efficient
 	peer := n.HighestChain()
-	log.Println("highest port: "+peer.Port)
+	log.Println("highest port: " + peer.Port)
 	height := int64(0)
-	blocks := n.GetMissingBlocks(height,peer)
+	blocks := n.GetMissingBlocks(height, peer)
 	n.blockchain.ResolveFork(blocks)
 }

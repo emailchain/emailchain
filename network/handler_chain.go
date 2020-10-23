@@ -25,11 +25,11 @@ func (h *handler) GetBlockByHash(w io.Writer, r *http.Request) Response {
 	err := json.NewDecoder(r.Body).Decode(&body)
 
 	block := h.network.blockchain.GetBlock(body["hash"])
-	hash:= ComputeHashForBlock(block)
+	hash := ComputeHashForBlock(block)
 	resp := map[string]interface{}{
-		"block":   block,
-		"hash":hash,
-		"valid":IsProofValid(block,TARGET_BITS),
+		"block": block,
+		"hash":  hash,
+		"valid": IsProofValid(block, TARGET_BITS),
 	}
 
 	status := http.StatusCreated
@@ -57,7 +57,7 @@ func (h *handler) GetMissingBlocks(w io.Writer, r *http.Request) Response {
 	blocks := h.network.blockchain.AllBlocksFrom(body["height"])
 
 	resp := map[string]interface{}{
-		"blocks":   blocks,
+		"blocks": blocks,
 	}
 
 	status := http.StatusCreated
@@ -103,6 +103,7 @@ func (h *handler) ViewBlockchain(w io.Writer, r *http.Request) Response {
 	}
 	return Response{resp, http.StatusOK, nil}
 }
+
 // get blockchain info
 func (h *handler) GetBlockchainInfo(w io.Writer, r *http.Request) Response {
 	if r.Method != http.MethodGet {
@@ -116,7 +117,7 @@ func (h *handler) GetBlockchainInfo(w io.Writer, r *http.Request) Response {
 
 	resp := map[string]interface{}{
 		"tip_height": h.network.blockchain.LastBlock().Height,
-		"total_pow": h.network.blockchain.TotalWork(),
+		"total_pow":  h.network.blockchain.TotalWork(),
 	}
 	return Response{resp, http.StatusOK, nil}
 }
@@ -135,13 +136,13 @@ func (h *handler) GenerateBlock(w io.Writer, r *http.Request) Response {
 	// Forge the new Block by adding it to the chain
 	var err error
 	block := h.network.blockchain.GenerateBlock()
-	if  len(r.Header[HDR_BDCAST]) == 0 || r.Header[HDR_BDCAST][0] != "true"{
+	if len(r.Header[HDR_BDCAST]) == 0 || r.Header[HDR_BDCAST][0] != "true" {
 		var value []byte
 		value, err = json.Marshal(block)
-		message := Message{endpoint: CHAIN_ADD,value:value}
+		message := Message{endpoint: CHAIN_ADD, value: value}
 		h.network.node.broadcast <- message
-		syncError:= h.network.blockchain.AddBlockToDB(block)
-		if syncError !=nil{
+		syncError := h.network.blockchain.AddBlockToDB(block)
+		if syncError != nil {
 			h.network.ResolveFork()
 		}
 	}
@@ -169,8 +170,8 @@ func (h *handler) AddBlock(w io.Writer, r *http.Request) Response {
 	log.Println("Adding Block to blockchain")
 	var block Block
 	err := json.NewDecoder(r.Body).Decode(&block)
-	syncError:= h.network.blockchain.AddBlockToDB(block)
-	if syncError !=nil{
+	syncError := h.network.blockchain.AddBlockToDB(block)
+	if syncError != nil {
 		h.network.ResolveFork()
 	}
 	resp := map[string]string{

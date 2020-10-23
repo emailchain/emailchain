@@ -48,15 +48,12 @@ func (p Peer) isMe(c Peer) bool {
 	return p.Address == c.Address && p.Port == c.Port
 }
 
-
 func (p Peer) toBytes() (d []byte) {
 	d, _ = json.Marshal(&p)
 	return
 }
 
-
 type Peers []Peer
-
 
 func (ps Peers) contains(p Peer) bool {
 	for _, pn := range ps {
@@ -77,4 +74,3 @@ func (ps Peers) delete(p Peer) (r Peers) {
 
 	return
 }
-

@@ -5,30 +5,31 @@ import (
 	"strconv"
 	"sync"
 )
-type Node struct {
-	Self    Peer
-	NodePeers Peers
-	network *Network
-	broadcast  chan Message
-	join       chan Peer
-	leave      chan Peer
 
-	waiter *sync.WaitGroup
+type Node struct {
+	Self      Peer
+	NodePeers Peers
+	network   *Network
+	broadcast chan Message
+	join      chan Peer
+	leave     chan Peer
+
+	waiter    *sync.WaitGroup
 	connected bool
 }
 
 func NewNode(p string) (n *Node) {
-	port,err := strconv.Atoi(p)
-	if err != nil{
+	port, err := strconv.Atoi(p)
+	if err != nil {
 		log.Panic(err)
 	}
 	n = &Node{
-		Self:       Me(port),
-		NodePeers:    Peers{},
-		broadcast:     make(chan Message),
-		join:       make(chan Peer),
-		waiter:     &sync.WaitGroup{},
-		connected:  true,
+		Self:      Me(port),
+		NodePeers: Peers{},
+		broadcast: make(chan Message),
+		join:      make(chan Peer),
+		waiter:    &sync.WaitGroup{},
+		connected: true,
 	}
 	n.startServices()
 	return
@@ -38,6 +39,7 @@ func NewNode(p string) (n *Node) {
 func (n *Node) Wait() {
 	n.waiter.Wait()
 }
+
 // Broadcast message to all peers
 func (n *Node) Broadcast(m Message) {
 	n.broadcast <- m
@@ -83,4 +85,3 @@ func (n *Node) httpServer() {
 	log.Printf("Listen at %s:%s", n.Self.Address, n.Self.Port)
 	n.network.Start()
 }
-

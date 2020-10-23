@@ -13,18 +13,18 @@ type Block struct {
 	Timestamp    int64   `json:"timestamp"`
 	Emails       []Email `json:"emails"`
 	PreviousHash string  `json:"previous_hash"`
-	Nonce        int64 `json:"nonce"`
+	Nonce        int64   `json:"nonce"`
 }
 
 func ComputeHashForBlock(block Block) string {
 	var buf bytes.Buffer
 	// Data for binary.Write must be a fixed-size value or a slice of fixed-size values,
 	// or a pointer to such data.
-	jsonblock, marshalErr := json.Marshal(block)
+	jsonBlock, marshalErr := json.Marshal(block)
 	if marshalErr != nil {
 		log.Fatalf("Could not marshal block: %s", marshalErr.Error())
 	}
-	hashingErr := binary.Write(&buf, binary.BigEndian, jsonblock)
+	hashingErr := binary.Write(&buf, binary.BigEndian, jsonBlock)
 	if hashingErr != nil {
 		log.Fatalf("Could not hash block: %s", hashingErr.Error())
 	}
@@ -37,7 +37,7 @@ func (b *Block) Serialize() []byte {
 	}
 	return encoded
 }
-func DeserializeBlock(d [] byte) *Block {
+func DeserializeBlock(d []byte) *Block {
 	var block Block
 	err := json.Unmarshal(d, &block)
 	if err != nil {
@@ -45,4 +45,3 @@ func DeserializeBlock(d [] byte) *Block {
 	}
 	return &block
 }
-

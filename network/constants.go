@@ -1,10 +1,10 @@
 package network
 
-
 // miscellaneous
 const (
 	HTTP_URL = "http://%s:%s%s"
 )
+
 // HTTP header
 const (
 	HDR_BDCAST = "Broadcast"
@@ -22,9 +22,9 @@ const (
 
 // email endpoints
 const (
-	EMAIL_NEW = EMAIL + "/new"
-	EMAIL_MAILBOX = EMAIL +"/mailbox"
-	EMAIL_SENT = EMAIL +"/sent"
+	EMAIL_NEW     = EMAIL + "/new"
+	EMAIL_MAILBOX = EMAIL + "/mailbox"
+	EMAIL_SENT    = EMAIL + "/sent"
 )
 
 //node endpoints
@@ -39,11 +39,11 @@ const (
 
 // chain endpoints
 const (
-	CHAIN_GENERATE = CHAIN + "/generate"
-	CHAIN_ADD = CHAIN + "/add"
-	CHAIN_VIEW = CHAIN + "/view"
-	CHAIN_SYNC = CHAIN + "/sync"
-	CHAIN_GETBLOCK = CHAIN +"/get_block"
-	CHAIN_INFO = CHAIN +"/info"
-	CHAIN_MISSINGBLOCKS = CHAIN +"/missing_blocks"
+	CHAIN_GENERATE      = CHAIN + "/generate"
+	CHAIN_ADD           = CHAIN + "/add"
+	CHAIN_VIEW          = CHAIN + "/view"
+	CHAIN_SYNC          = CHAIN + "/sync"
+	CHAIN_GETBLOCK      = CHAIN + "/get_block"
+	CHAIN_INFO          = CHAIN + "/info"
+	CHAIN_MISSINGBLOCKS = CHAIN + "/missing_blocks"
 )

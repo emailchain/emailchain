@@ -8,13 +8,14 @@ import (
 )
 
 type handler struct {
-	network    *Network
+	network *Network
 }
 type Response struct {
 	value      interface{}
 	statusCode int
 	err        error
 }
+
 func NewHandler(network *Network) http.Handler {
 
 	h := handler{network: network}
@@ -36,7 +37,6 @@ func NewHandler(network *Network) http.Handler {
 	mux.HandleFunc(CHAIN_ADD, BuildHTTPResponse(h.AddBlock))
 	return mux
 }
-
 
 func BuildHTTPResponse(h func(io.Writer, *http.Request) Response) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

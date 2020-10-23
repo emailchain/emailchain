@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/big"
 )
+
 const TARGET_BITS uint = 10
 
 type PoW struct {
@@ -16,19 +17,21 @@ type PoW struct {
 func NewPow(block Block, targetBits uint, nonce int64) *PoW {
 	return &PoW{Block: block, TargetBits: targetBits, Nonce: nonce}
 }
+
 // newTarget returns a target number with required leading zero.
 func newTarget(targetBits uint) *big.Int {
 	target := big.NewInt(1)
 	target.Lsh(target, 256-targetBits)
 	return target
 }
+
 // run the proof of work algorithm
-func (pow *PoW) ComputeProof(){
+func (pow *PoW) ComputeProof() {
 	nonce := int64(0)
 	target := newTarget(pow.TargetBits)
 	maxNonce := int64(math.MaxInt64)
-	for nonce <= maxNonce{
-				var hashInt big.Int
+	for nonce <= maxNonce {
+		var hashInt big.Int
 		hashInt.SetBytes(Hash(pow.Block.Serialize()))
 		if hashInt.Cmp(target) == -1 {
 			pow.Nonce = nonce
@@ -39,11 +42,13 @@ func (pow *PoW) ComputeProof(){
 		pow.Block.Nonce = nonce
 	}
 }
+
 // hash data into byte array
 func Hash(data []byte) []byte {
 	hash := sha256.Sum256(append(data))
 	return hash[:]
 }
+
 // validate that the proof of work is valid
 func IsProofValid(block Block, targetBits uint) bool {
 	var hashInt big.Int

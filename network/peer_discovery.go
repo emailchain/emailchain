@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func discoverPeers(n *Network, p Peer){
+func discoverPeers(n *Network, p Peer) {
 	log.Printf("Discovering Peers")
 	var (
 		boot = fmt.Sprintf("http://%s:%s%s", p.Address, p.Port, NODE_PEERS)
@@ -32,17 +32,16 @@ func discoverPeers(n *Network, p Peer){
 		return
 	}
 	var result map[string][]Peer
-	json.Unmarshal(body,&result)
+	json.Unmarshal(body, &result)
 
 	var newList []Peer
-	for _,peer := range result["nodes"]{
-		newList = append(newList,peer)
+	for _, peer := range result["nodes"] {
+		newList = append(newList, peer)
 	}
 	newList = append(newList, p)
 	n.UpdatePeerList(newList)
 	for _, host := range result["nodes"] {
 		n.node.join <- Peer{host.Port, host.Address}
-
 
 		var (
 			req *http.Request
@@ -65,7 +64,7 @@ func discoverPeers(n *Network, p Peer){
 			return
 		}
 		var result2 map[string][]Peer
-		json.Unmarshal(body,&result2)
+		json.Unmarshal(body, &result2)
 
 		for _, h := range result2["nodes"] {
 			n.node.join <- Peer{h.Port, h.Address}
