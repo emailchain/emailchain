@@ -7,25 +7,25 @@ import (
 )
 
 const TARGET_BITS uint = 10
-
+// Proof of Work struct
 type PoW struct {
 	Block      Block
 	TargetBits uint
 	Nonce      int64
 }
-
+// Create a new Proof of Work
 func NewPow(block Block, targetBits uint, nonce int64) *PoW {
 	return &PoW{Block: block, TargetBits: targetBits, Nonce: nonce}
 }
 
-// newTarget returns a target number with required leading zero.
+// Returns a target number with required leading zero.
 func newTarget(targetBits uint) *big.Int {
 	target := big.NewInt(1)
 	target.Lsh(target, 256-targetBits)
 	return target
 }
 
-// run the proof of work algorithm
+// Run the proof of work algorithm
 func (pow *PoW) ComputeProof() {
 	nonce := int64(0)
 	target := newTarget(pow.TargetBits)
@@ -43,13 +43,13 @@ func (pow *PoW) ComputeProof() {
 	}
 }
 
-// hash data into byte array
+// Hash data into byte array
 func Hash(data []byte) []byte {
 	hash := sha256.Sum256(append(data))
 	return hash[:]
 }
 
-// validate that the proof of work is valid
+// Validate the Proof of Work
 func IsProofValid(block Block, targetBits uint) bool {
 	var hashInt big.Int
 	hashInt.SetBytes(Hash(block.Serialize()))
