@@ -1,4 +1,4 @@
-package presistence
+package database
 
 import (
 	"fmt"
@@ -13,15 +13,15 @@ type IDatabase interface {
 	Tip() []byte
 	AddTip(blockHash string)
 }
-type Database struct {
+type DB struct {
 	instance *bolt.DB
 	DbFile   string
 	bucket   string
 }
 
-func NewDatabase(nodeID string) *Database {
+func NewDatabase(nodeID string) *DB {
 	const blocksBucket = "blocks"
-	DbFile := fmt.Sprintf("db/blockchain_%s.db", nodeID)
+	DbFile := fmt.Sprintf("database_%s.db", nodeID)
 	db, err := bolt.Open(DbFile, 0600, &bolt.Options{Timeout: 2 * time.Minute})
 	if err != nil {
 		log.Panic(err)
@@ -33,7 +33,7 @@ func NewDatabase(nodeID string) *Database {
 		}
 		return nil
 	})
-	newDatabase := &Database{
+	newDatabase := &DB{
 		db,
 		DbFile,
 		blocksBucket,
@@ -41,7 +41,7 @@ func NewDatabase(nodeID string) *Database {
 	return newDatabase
 }
 
-func (db *Database) AddBlock(serializedBlock []byte, blockHash string) {
+func (db *DB) AddBlock(serializedBlock []byte, blockHash string) {
 	_ = db.instance.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(db.bucket))
 		err := b.Put([]byte(blockHash), serializedBlock)
@@ -51,7 +51,7 @@ func (db *Database) AddBlock(serializedBlock []byte, blockHash string) {
 		return nil
 	})
 }
-func (db *Database) GetBlock(blockHash string) []byte {
+func (db *DB) GetBlock(blockHash string) []byte {
 	var serializedBlock []byte
 	err := db.instance.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(db.bucket))
@@ -64,7 +64,7 @@ func (db *Database) GetBlock(blockHash string) []byte {
 	return serializedBlock
 }
 
-func (db *Database) Tip() []byte {
+func (db *DB) Tip() []byte {
 	var serializedBlock []byte
 	err := db.instance.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(db.bucket))
@@ -76,7 +76,7 @@ func (db *Database) Tip() []byte {
 	}
 	return serializedBlock
 }
-func (db *Database) AddTip(blockHash string) {
+func (db *DB) AddTip(blockHash string) {
 	_ = db.instance.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(db.bucket))
 		err := b.Put([]byte("t"), []byte(blockHash))

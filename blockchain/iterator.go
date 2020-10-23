@@ -1,7 +1,7 @@
 package blockchain
 
 import (
-	"emailchain/presistence"
+	"emailchain/database"
 )
 // Iterator interface
 type Iterator interface {
@@ -12,7 +12,7 @@ type Iterator interface {
 type BlockchainIterator struct {
 	CurrentHash string
 	Index       int64
-	db          *presistence.Database
+	db          *database.DB
 }
 // Create new iterator
 func NewBlockchainIterator(bc Blockchain) *BlockchainIterator {

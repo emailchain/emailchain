@@ -1,7 +1,7 @@
 package blockchain
 
 import (
-	. "emailchain/presistence"
+	. "emailchain/database"
 	"fmt"
 	"log"
 	"time"
@@ -9,7 +9,7 @@ import (
 // Blockchain structure
 type Blockchain struct {
 	Mempool map[string]Email
-	Db      *Database
+	Db      *DB
 }
 // Create new Blockchain
 func NewBlockchain(nodeID string) *Blockchain {

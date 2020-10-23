@@ -1,7 +1,6 @@
 package blockchain
 
 import (
-	"bytes"
 	"testing"
 )
 

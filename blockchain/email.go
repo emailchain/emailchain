@@ -15,7 +15,15 @@ type Email struct {
 
 // Generate a unique ID for emails
 func (email *Email) GenerateID() {
-	hashInput := append(email.Serialize())
+	hashInput := append(email.serialize())
 	hash := utils.ComputeHashSha256(hashInput)
 	email.ID = hash
+}
+// Serialize email to slices
+func (email *Email) serialize() []byte {
+	encoded, err := json.Marshal(email)
+	if err != nil {
+		log.Panic(err)
+	}
+	return encoded
 }
