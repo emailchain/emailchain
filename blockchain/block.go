@@ -8,6 +8,7 @@ import (
 	"log"
 )
 
+// Block structure
 type Block struct {
 	Height       int64   `json:"height"`
 	Timestamp    int64   `json:"timestamp"`
@@ -15,7 +16,7 @@ type Block struct {
 	PreviousHash string  `json:"previous_hash"`
 	Nonce        int64   `json:"nonce"`
 }
-
+// Computes SHA256 hash for block
 func ComputeHashForBlock(block Block) string {
 	var buf bytes.Buffer
 	// Data for binary.Write must be a fixed-size value or a slice of fixed-size values,
@@ -30,6 +31,7 @@ func ComputeHashForBlock(block Block) string {
 	}
 	return utils.ComputeHashSha256(buf.Bytes())
 }
+// Serializes Block to a array slice
 func (b *Block) Serialize() []byte {
 	encoded, err := json.Marshal(b)
 	if err != nil {
@@ -37,6 +39,7 @@ func (b *Block) Serialize() []byte {
 	}
 	return encoded
 }
+// Deserialize Block to struct
 func DeserializeBlock(d []byte) *Block {
 	var block Block
 	err := json.Unmarshal(d, &block)
