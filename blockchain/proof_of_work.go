@@ -32,7 +32,7 @@ func (pow *PoW) ComputeProof() {
 	maxNonce := int64(math.MaxInt64)
 	for nonce <= maxNonce {
 		var hashInt big.Int
-		hashInt.SetBytes(Hash(pow.Block.Serialize()))
+		hashInt.SetBytes(hash(pow.Block.Serialize()))
 		if hashInt.Cmp(target) == -1 {
 			pow.Nonce = nonce
 			pow.Block.Nonce = nonce
@@ -44,7 +44,7 @@ func (pow *PoW) ComputeProof() {
 }
 
 // Hash data into byte array
-func Hash(data []byte) []byte {
+func hash(data []byte) []byte {
 	hash := sha256.Sum256(append(data))
 	return hash[:]
 }
@@ -52,7 +52,7 @@ func Hash(data []byte) []byte {
 // Validate the Proof of Work
 func IsProofValid(block Block, targetBits uint) bool {
 	var hashInt big.Int
-	hashInt.SetBytes(Hash(block.Serialize()))
+	hashInt.SetBytes(hash(block.Serialize()))
 	target := newTarget(targetBits)
 	return hashInt.Cmp(target) == -1
 }
